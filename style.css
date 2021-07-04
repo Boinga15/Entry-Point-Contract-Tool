@@ -1,0 +1,39 @@
+body {
+    font: normal 16px helvetica, arial, sans-serif;
+    text-align: center;
+
+    background-color: beige;
+    border: show
+    border-color: white;
+    border-width: 20px;
+}
+
+div.Header {
+    border-style: solid;
+    border-color: black;
+    border-width: thick;
+}
+
+button.generate {
+  background-color: mediumpurple;
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 8px;
+}
+
+p.GMessage {
+  word-wrap: break-word;
+}
+
+div.Contract {
+  background-color: white
+  border-style: dotted;
+  border-color: black;
+  border-width: thick;
+}

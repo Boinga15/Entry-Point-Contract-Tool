@@ -1,0 +1,297 @@
+<html>
+    <head>
+        <title>E.P contract creator</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="icon" href="icon.png">
+        <script>
+        var formattedMode = "";
+
+
+
+        function testWhite(x) {
+    var white = new RegExp(/^\s$/);
+    return white.test(x.charAt(0));
+};
+
+        function wordWrap(str, maxWidth, nls) {
+
+    var newLineStr = nls; done = false; res = '';
+    while (str.length > maxWidth) {
+        found = false;
+        // Inserts new line at first whitespace of the line
+        for (i = maxWidth - 1; i >= 0; i--) {
+            if (testWhite(str.charAt(i))) {
+                res = res + [str.slice(0, i), newLineStr].join('');
+                str = str.slice(i + 1);
+                found = true;
+                break;
+            }
+        }
+        // Inserts new line at maxWidth position, the word is too long to wrap
+        if (!found) {
+            res += [str.slice(0, maxWidth), newLineStr].join('');
+            str = str.slice(maxWidth);
+        }
+
+    }
+
+    return res + str;
+}
+
+            function findError(message, objectives, failure) {
+              if(message == "") {
+                document.getElementById("Error").innerHTML = "Error: Message cannot be left blank."
+                return true
+              } else if(objectives == "") {
+                document.getElementById("Error").innerHTML = "Error: Objectives cannot be left blank."
+                return true
+              } else if(failure == "") {
+                document.getElementById("Error").innerHTML = "Error: Failures cannot be left blank."
+                return true
+              } else {
+                document.getElementById("Error").innerHTML = ""
+                return false
+              }
+            }
+
+            function generateContract() {
+                var heading = document.getElementById("STitle").options[document.getElementById("STitle").selectedIndex].text
+                var to = document.getElementById("STo").value
+                if (to == "") {
+                    to = "The Freelancer"
+                }
+                var message = document.getElementById("SMessage").value
+                var sender = document.getElementById("SSender").value
+                if(sender == "") {
+                    sender = "A friend"
+                }
+                var map = document.getElementById("SMission").options[document.getElementById("SMission").selectedIndex].text
+                var diff1 = document.getElementById("SDiff1").options[document.getElementById("SDiff1").selectedIndex].text
+                var diff2 = document.getElementById("SDiff2").options[document.getElementById("SDiff2").selectedIndex].text
+                var difficulty = diff1 + " to " + diff2
+                if(diff1 == diff2) {
+                    difficulty = diff1
+                }
+                var objectives = document.getElementById("SObjectives").value
+                var failure = document.getElementById("SFail").value
+                var bonusObjectives = document.getElementById("SBOb").value
+                var notes = document.getElementById("SNotes").value
+
+                if(findError(message, objectives, failure)) {
+                  return;
+                }
+
+                document.getElementById("ShowContract").style.display = "block"
+
+                document.getElementById("GTitle").innerHTML = heading
+                document.getElementById("GTo").innerHTML = "For " + to
+                document.getElementById("GMessage").innerHTML = wordWrap(message, 75, "<br>")
+                document.getElementById("GSender").innerHTML = "-" + sender
+                document.getElementById("GSignature").innerHTML = "Signature goes here (for " + to + "): "
+                document.getElementById("GMission").innerHTML = "Mission: " + map
+                document.getElementById("GDifficulty").innerHTML = "Difficulty: " + difficulty
+                document.getElementById("GObjectives").innerHTML = objectives.replace(/(\r\n|\n|\r)/gm, "<br>");
+                document.getElementById("GFail").innerHTML = failure.replace(/(\r\n|\n|\r)/gm, "<br>");
+                if(bonusObjectives == "") {
+                  document.getElementById("HBOb").innerHTML = ""
+                  document.getElementById("GBOb").innerHTML = ""
+                } else {
+                  document.getElementById("HBOb").innerHTML = "Bonus objectives:"
+                  document.getElementById("GBOb").innerHTML = bonusObjectives.replace(/(\r\n|\n|\r)/gm, "<br>");
+                }
+                if(notes == "") {
+                  document.getElementById("HNotes").innerHTML = ""
+                  document.getElementById("GNotes").innerHTML = ""
+                } else {
+                  document.getElementById("HNotes").innerHTML = "Extra notes:"
+                  document.getElementById("GNotes").innerHTML = wordWrap(notes, 75, "<br>")
+                }
+
+                var currentFor = "";
+                currentFor = heading + "\n\n" + "For " + to + "\n\n" + wordWrap(message, 75, "\n") + "\n\n" + "-" + sender + "\n\n" + "Signature goes here (for " + to + "): " + "\n\n\n\n" + "Mission: " + map + "\n"
+                currentFor = currentFor + "Difficulty: " + difficulty + "\n\nObjectives:\n" + objectives.replace(/(\r\n|\n|\r)/gm, "\n") + "\n\nFailure conditions:\n" + failure.replace(/(\r\n|\n|\r)/gm, "\n")
+                if(bonusObjectives == "") {
+
+                }
+                else {
+                  currentFor = currentFor + "\n\nBonus objectives:\n" + bonusObjectives.replace(/(\r\n|\n|\r)/gm, "\n")
+                }
+                if(notes == "") {
+
+                }
+                else {
+                  currentFor = currentFor + "\n\nNotes:\n" + wordWrap(notes, 75, "\n")
+                }
+
+                formattedMode = currentFor
+            }
+
+
+          function downloadContract() {
+            var a = document.body.appendChild(
+            document.createElement("a")
+        );
+        var textToWrite = formattedMode
+        if(document.getElementById("SCDN").value == "") {
+          a.download = "Contract.txt"
+        } else {
+          a.download = document.getElementById("SCDN").value + ".txt"
+        }
+        textToWrite = textToWrite.replace(/\n/g, "%0D%0A");
+        a.href = "data:text/plain," + textToWrite;
+        a.click();
+          }
+
+        </script>
+    </head>
+    <body>
+        <h1>Entry point contract creator.</h1>
+        <h2>Made by Alexander Nair.</h2>
+
+        <br>
+
+        <div class="Header">
+            <h1>What the tool is and how to use it:</h1>
+        </div>
+        <p>
+            This tool is made to allow other users to make their own custom contracts for Entry Point (A game on roblox). The tool will take in several factors and output text the user can then send to their friends for them to try the contracts. There is also a group where users may share their contracts with the public (or at least people in the group). Link to the group and other things may be found at the bottom of this page.
+        </p>
+        <p>
+          Using the tool is very simple: Simply fill in the boxes with valid information and then press "Generate Contract". Copy the entire contract and directly paste it into a text file. After that's been done, head to the group to easily share the text file containing the contract with others or privatly message it to your friends.
+        </p>
+        <br>
+
+        <div class="Header">
+            <h1>The tool:</h1>
+        </div>
+
+        <hr>
+
+        <label for="Title">Choose a heading:</label>
+        <select id="STitle">
+            <option value="CM">CONFIDENTIAL MATTERS</option>
+            <option value="PR">PRIVATE REQUEST</option>
+            <option value="UR">URGENT REQUEST</option>
+        </select>
+
+        <hr>
+
+        <label for="To">Who is this letter for (Leave empty for "The Freelancer"):</label>
+        <input type="text" id="STo">
+
+        <hr>
+
+        <p>Write the message for the contract:<p>
+        <textarea id="SMessage"></textarea>
+
+        <hr>
+
+        <label for="From">Who is sending this message (Leave blank for "A friend"):</label>
+        <input type="text" id="SSender">
+
+        <hr>
+
+        <label for="Mission">Choose the mission:</label>
+        <select id="SMission">
+            <option value="Killhouse">The Killhouse</option>
+            <option value="Setup">The Setup (The Freelancer Heists)</option>
+            <option value="Lockup">The Lockup (The Freelancer Heists)</option>
+            <option value="Score">The Score (The Freelancer Heists)</option>
+            <option value="Blacksite">The Blacksite</option>
+            <option value="Auction">The Auction (Night Heists)</option>
+            <option value="Gala">The Gala (Night Heists)</option>
+            <option value="Financer">The Financer</option>
+            <option value="Deposit">The Deposit</option>
+            <option value="Lakehouse">The Lakehouse</option>
+            <option value="Withdrawal">The Withdrawal</option>
+            <option value="Cache">The Cache (Night Heists)</option>
+            <option value="Scientist">The Scientist</option>
+            <option value="SCRS">The SCRS</option>
+            <option value="BD">Black Dusk</option>
+        </select>
+
+        <hr>
+
+        <label for="Diff">Choose difficulties (Leave both boxes blank for Rookie to Legend, and if both boxes are the same, than only that difficulty will be used).</label>
+        <select id="SDiff1">
+            <option value="R">Rookie</option>
+            <option value="P">Professional</option>
+            <option value="O">Operative</option>
+            <option value="E">Elite</option>
+            <option value="L">Legend</option>
+        </select> to <select id="SDiff2">
+            <option value="R">Rookie</option>
+            <option value="P">Professional</option>
+            <option value="O">Operative</option>
+            <option value="E">Elite</option>
+            <option value="L">Legend</option>
+        </select>
+
+        <hr>
+
+        <p>Write each detailed objective (each one should be on a seperate line and start with a dash):<p>
+        <textarea id="SObjectives"></textarea>
+
+        <hr>
+
+        <p>Write each failure objective (each one should be on a seperate line and start with a dash):<p>
+        <textarea id="SFail"></textarea>
+
+        <hr>
+
+        <p>Write each bonus objective (each one should be on a seperate line and start with a dash, leave blank for no bonus objectives):<p>
+        <textarea id="SBOb"></textarea>
+
+        <hr>
+
+        <p>Write any notes for the contract (leave blank for no notes.):<p>
+        <textarea id="SNotes"></textarea>
+
+        <hr>
+
+        <button class="generate", onclick="generateContract()"><h3>Generate contract</h3></button>
+        <h3 id="Error" style="color: red"></h3>
+        <div id="ShowContract", class="Header", style="display: none">
+          <h2>Contract:</h2>
+          <p id="GTitle"></p>
+          <br>
+          <p id="GTo"></p>
+          <br>
+          <div id="MessageContainer">
+              <p id="GMessage" class="GMessage" ></p>
+          </div>
+          <br>
+          <p id="GSender"></p>
+          <br>
+          <p id="GSignature"></p>
+          <br>
+          <br>
+          <p id="GMission"></p>
+          <p id="GDifficulty"></p>
+          <br>
+          <p id="HObjectives">Objectives:</p>
+          <p id="GObjectives"></p>
+          <br>
+          <p id="HFail">Failure conditions:</p>
+          <p id="GFail"></p>
+          <br>
+          <p id="HBOb">Bonus objectives:</p>
+          <p id="GBOb"></p>
+          <br>
+          <p id="HNotes">Notes:</p>
+          <p id="GNotes"></p>
+          <br>
+          <br>
+          <p>Input the downloaded file's name (Leave blank for "Contract"):</p>
+          <input type="text" id="SCDN">
+          <br>
+         <button class="generate", onclick="downloadContract()"><h3>Download contract as a txt file.</h3></button>
+        </div>
+        <div class="Header">
+          <h1>Links:</h1>
+        </div>
+        <h2>Creator's youtube link: <a href="https://www.youtube.com/channel/UCWzh8d_HlHj-z_I8qZqaRTA">https://www.youtube.com/channel/UCWzh8d_HlHj-z_I8qZqaRTA</a></h2>
+        <h2>Creator's roblox account link: <a href="https://www.roblox.com/users/429196835/profile">https://www.roblox.com/users/429196835/profile</a></h2>
+        <h2>Contract group link: TBA</a></h2>
+    </body>
+</html>
